@@ -9,7 +9,7 @@ export class AudienceActivatedConsumer extends Consumer<AudienceActivatedEvent> 
   queueGroupName = kafkaGroupName
 
   async onMessage(data: AudienceActivatedEvent['data'], msg: Message) {
-    console.log(data)
+    console.log(data, 'DATA RECIEVED @@@--')
     const {
       userId,
       audienceId,
@@ -22,30 +22,30 @@ export class AudienceActivatedConsumer extends Consumer<AudienceActivatedEvent> 
     // SendGrid Service
     const sendGridSvc = new SendGridService(apiKey)
 
-    const chunks = SendGridService.lazyLoadRecipients(recipients, 1000);
-    console.log(chunks)
+    // const chunks = SendGridService.lazyLoadRecipients(recipients, 1000);
+    // console.log(chunks)
 
-    // send emails by ckunk
-    for (let index = 0; index < chunks.length; index++) {
-      const element = chunks[index];
-      const personalizations = element.map(contact => {
-        // only add customers with email
-        if (contact.attributes?.email) {
-          return {
-            to: [{ email: contact.attributes.email }],
-            custom_args: {
-              audience_id: audienceId
-            }
-          }
-        }
-      });
+    // // send emails by ckunk
+    // for (let index = 0; index < chunks.length; index++) {
+    //   const element = chunks[index];
+    //   const personalizations = element.map(contact => {
+    //     // only add customers with email
+    //     if (contact.attributes?.email) {
+    //       return {
+    //         to: [{ email: contact.attributes.email }],
+    //         custom_args: {
+    //           audience_id: audienceId
+    //         }
+    //       }
+    //     }
+    //   });
 
-      sendGridSvc.sendEmails({
-        template_id: templateId,
-        from: { email: sender },
-        personalizations,
-      })
-    }
+      // sendGridSvc.sendEmails({
+      //   template_id: templateId,
+      //   from: { email: sender },
+      //   personalizations,
+      // })
+    // }
 
     const report = Report.build({
       userId,

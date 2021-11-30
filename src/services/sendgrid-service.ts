@@ -31,7 +31,7 @@ export class SendGridService {
     }
   }
 
-  static lazyLoadRecipients(arr, len): { id: string, attributes: any }[][] {
+  static lazyLoadRecipients(arr : [], len : number): { id: string, attributes: any }[][] {
     let chunks = [], i = 0, n = arr.length;
 
     while (i < n) {

@@ -1,6 +1,9 @@
 import { kafkaWrapper } from "./kafka-wrapper"
 import { AudienceActivatedConsumer } from "./events/consumers/audience-activated-consumer"
 
+const dotenv = require('dotenv');
+dotenv.config();
+
 const start = async () => {
   // verify envs
   if (!process.env.SECRET_JWT) {
@@ -13,6 +16,12 @@ const start = async () => {
   try {
     await kafkaWrapper.connect('customers-kafka', process.env.KAFKA_BROKERS.split(','))
     new AudienceActivatedConsumer(kafkaWrapper.client).listen()
+
+    // await mongoose.connect(process.env.MONGO_URI, {
+    //   useNewUrlParser: true,
+    //   useUnifiedTopology: true,
+    //   useCreateIndex: true,
+    // })
   } catch (error) {
     console.log('Starting app failed.', error)
   }

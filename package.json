@@ -12,6 +12,7 @@
     "@navegg/common": "^1.0.13",
     "@types/express": "^4.17.13",
     "axios": "^0.24.0",
+    "dotenv": "^10.0.0",
     "express": "^4.17.1",
     "kafkajs": "^1.15.0",
     "mongoose": "^5.12.11",
