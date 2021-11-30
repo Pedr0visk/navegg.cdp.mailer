@@ -22,7 +22,7 @@ export class AudienceActivatedConsumer extends Consumer<AudienceActivatedEvent> 
     // SendGrid Service
     const sendGridSvc = new SendGridService(apiKey)
 
-    const chunks = SendGridService.loadLazyRecipients(recipients, 1000);
+    const chunks = SendGridService.lazyLoadRecipients(recipients, 1000);
     console.log(chunks)
 
     // send emails by ckunk
@@ -47,8 +47,6 @@ export class AudienceActivatedConsumer extends Consumer<AudienceActivatedEvent> 
       })
     }
 
-
-
     const report = Report.build({
       userId,
       audienceId,
@@ -57,8 +55,6 @@ export class AudienceActivatedConsumer extends Consumer<AudienceActivatedEvent> 
       sender,
       status: ReportStatus.Pending
     })
-
-
 
     await report.save()
     console.log('successfully created!')

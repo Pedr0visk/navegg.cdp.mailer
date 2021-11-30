@@ -1,4 +1,4 @@
-import mongoose, { Schema } from "mongoose"
+import { Document, Schema, model, Model } from "mongoose";
 import { ReportStatus } from "@navegg/common";
 
 export { ReportStatus }
@@ -12,7 +12,7 @@ interface ReportAttrs {
   sender: string
 }
 
-interface ReportDoc extends mongoose.Document {
+interface ReportDoc extends Document {
   userId: number
   audienceId: string
   templateId: string
@@ -21,11 +21,11 @@ interface ReportDoc extends mongoose.Document {
   sender: string
 }
 
-interface ReportModel extends mongoose.Model<ReportDoc> {
+interface ReportModel extends Model<ReportDoc> {
   build(attrs: ReportAttrs): ReportDoc;
 }
 
-const reportSchema = new mongoose.Schema(
+const reportSchema = new Schema(
   {
     userId: {
       type: Number,
@@ -70,6 +70,6 @@ reportSchema.statics.build = (attrs: ReportAttrs) => {
   return new Report(attrs)
 }
 
-const Report = mongoose.model<ReportDoc, ReportModel>('Report', reportSchema)
+const Report = model<ReportDoc, ReportModel>('Report', reportSchema)
 
 export { Report }
