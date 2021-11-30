@@ -1,3 +1,5 @@
+import mongoose from 'mongoose'
+
 import { kafkaWrapper } from "./kafka-wrapper"
 import { AudienceActivatedConsumer } from "./events/consumers/audience-activated-consumer"
 
@@ -22,6 +24,7 @@ const start = async () => {
     //   useUnifiedTopology: true,
     //   useCreateIndex: true,
     // })
+    
   } catch (error) {
     console.log('Starting app failed.', error)
   }
