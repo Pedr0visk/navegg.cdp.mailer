@@ -1,11 +1,16 @@
 import axios, { AxiosResponse } from "axios"
 
+interface From {
+  email: string
+}
+interface Personalization {
+  to: From[]
+  custom_args: any
+}
+
 interface Payload {
-  from: { email: string }
-  personalizations: {
-    to: { email: string }[]
-    custom_args: any
-  }[]
+  from: From
+  personalizations: Personalization[]
   template_id: string
 }
 
@@ -31,7 +36,7 @@ export class SendGridService {
     }
   }
 
-  static lazyLoadRecipients(arr : [], len : number): { id: string, attributes: any }[][] {
+  static lazyLoadRecipients(arr : any, len : number): { id: string, attributes: any }[][] {
     let chunks = [], i = 0, n = arr.length;
 
     while (i < n) {
