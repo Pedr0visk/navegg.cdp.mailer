@@ -50,6 +50,7 @@ export class AudienceActivatedConsumer extends Consumer<AudienceActivatedEvent> 
       const response = await sendGridSvc.sendEmails({
         template_id: templateId,
         from: { email: sender },
+        //@ts-ignore
         personalizations: personalizations_data,
       })
 

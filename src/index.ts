@@ -1,7 +1,8 @@
-// import mongoose from 'mongoose'
+import { connect } from 'mongoose';
 
 import { kafkaWrapper } from "./kafka-wrapper"
 import { AudienceActivatedConsumer } from "./events/consumers/audience-activated-consumer"
+import { app } from './app'
 
 const dotenv = require('dotenv');
 dotenv.config();
@@ -19,15 +20,20 @@ const start = async () => {
     await kafkaWrapper.connect('mailer-kafka', process.env.KAFKA_BROKERS.split(','))
     new AudienceActivatedConsumer(kafkaWrapper.client).listen()
 
-    // await mongoose.connect(process.env.MONGO_URI, {
-    //   useNewUrlParser: true,
-    //   useUnifiedTopology: true,
-    //   useCreateIndex: true,
-    // })
+    await connect("", {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+      useCreateIndex: true,
+    })
 
   } catch (error) {
     console.log('Starting app failed.', error)
   }
+
+  app.listen(3000, () => {
+    console.log('Listening on port 3000!')
+  })
+
 }
 
 start()
