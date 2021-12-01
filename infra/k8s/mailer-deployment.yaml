@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mailer-deployment
+  namespace: nvg-cdp
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      component: mailer
+  template:
+    metadata:
+      labels:
+        component: mailer
+    spec:
+      imagePullSecrets:
+        - name: us-icr-io
+      containers:
+        - name: customer
+          image: us.icr.io/naveggcdp/cdp-mailer
+          ports:
+            - containerPort: 54089
+          env:
+            - name: KAFKA_BROKERS
+              value: 'my-cluster-kafka-bootstrap:9092,my-cluster-kafka-bootstrap:9092,my-cluster-kafka-bootstrap:9093'
+            - name: MONGO_URI
+              value: 'mongodb://mailer-mongo-cluster-ip-service:27017/logs'
+            - name: JWT_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: secretjwt
+                  key: SECRET_JWT

@@ -9,7 +9,6 @@ export class AudienceActivatedConsumer extends Consumer<AudienceActivatedEvent> 
   queueGroupName = kafkaGroupName
 
   async onMessage(data: AudienceActivatedEvent['data'], msg: Message) {
-    console.log(data, 'DATA RECIEVED @@@--')
     const {
       userId,
       audienceId,
@@ -19,11 +18,19 @@ export class AudienceActivatedConsumer extends Consumer<AudienceActivatedEvent> 
       apiKey
     } = data
 
+    const report = Report.build({
+      userId,
+      audienceId,
+      templateId,
+      recipients,
+      sender,
+      status: ReportStatus.Pending
+    })
+
     // SendGrid Service
     const sendGridSvc = new SendGridService(apiKey)
 
     const chunks = SendGridService.lazyLoadRecipients(recipients, 1000);
-    console.log(chunks)
 
     // send emails by ckunk
     for (let index = 0; index < chunks.length; index++) {
@@ -40,25 +47,17 @@ export class AudienceActivatedConsumer extends Consumer<AudienceActivatedEvent> 
         }
       });
 
-
-      sendGridSvc.sendEmails({
+      const response = await sendGridSvc.sendEmails({
         template_id: templateId,
         from: { email: sender },
-        //@ts-ignore
-        personalizations : personalizations_data,
+        personalizations: personalizations_data,
       })
+
+      if (response.success) {
+        console.log('success')
+      } else {
+        console.log('error')
+      }
     }
-
-    const report = Report.build({
-      userId,
-      audienceId,
-      templateId,
-      recipients,
-      sender,
-      status: ReportStatus.Pending
-    })
-
-    await report.save()
-    console.log('successfully created!')
   }
 }

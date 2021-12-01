@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mailer-mongo-deployment
+  namespace: nvg-cdp
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mailer-mongo
+  template:
+    metadata:
+      labels:
+        app: mailer-mongo
+    spec:
+      containers:
+        - name: mailer-mongo
+          image: mongo
+          imagePullPolicy: IfNotPresent
+          volumeMounts:
+              - name: mailer-mongo-storage
+                mountPath: /data/db
+      volumes:
+        - name: mailer-mongo-storage
+          persistentVolumeClaim:
+            claimName: mailer-mongo-persistent-volume-claim
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mailer-mongo-cluster-ip-service
+  namespace: nvg-cdp
+spec:
+  selector:
+    app: mailer-mongo
+  ports:
+    - name: db
+      protocol: TCP
+      port: 27017
+      targetPort: 27017
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mailer-mongo-persistent-volume-claim
+  namespace: nvg-cdp
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 2Gi

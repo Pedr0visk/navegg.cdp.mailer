@@ -22,9 +22,16 @@ export class SendGridService {
     this.apiKey = apiKey
   }
 
-  async sendEmails(data: Payload): Promise<AxiosResponse> {
-    const res = await axios.post(this.apiUrl, data, this.config)
-    return res
+  async sendEmails(data: Payload): Promise<{ success: boolean, data?: AxiosResponse }> {
+    try {
+      const res = await axios.post(this.apiUrl, data, this.config)
+      return {
+        success: true,
+        data: res.data
+      }
+    } catch (error) {
+      return { success: false }
+    }
   }
 
   get config() {
@@ -36,7 +43,7 @@ export class SendGridService {
     }
   }
 
-  static lazyLoadRecipients(arr : any, len : number): { id: string, attributes: any }[][] {
+  static lazyLoadRecipients(arr: any, len: number): { id: string, attributes: any }[][] {
     let chunks = [], i = 0, n = arr.length;
 
     while (i < n) {

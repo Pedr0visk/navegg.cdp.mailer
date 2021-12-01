@@ -1,4 +1,4 @@
-import mongoose from 'mongoose'
+// import mongoose from 'mongoose'
 
 import { kafkaWrapper } from "./kafka-wrapper"
 import { AudienceActivatedConsumer } from "./events/consumers/audience-activated-consumer"
@@ -16,7 +16,7 @@ const start = async () => {
   }
 
   try {
-    await kafkaWrapper.connect('customers-kafka', process.env.KAFKA_BROKERS.split(','))
+    await kafkaWrapper.connect('mailer-kafka', process.env.KAFKA_BROKERS.split(','))
     new AudienceActivatedConsumer(kafkaWrapper.client).listen()
 
     // await mongoose.connect(process.env.MONGO_URI, {
@@ -24,7 +24,7 @@ const start = async () => {
     //   useUnifiedTopology: true,
     //   useCreateIndex: true,
     // })
-    
+
   } catch (error) {
     console.log('Starting app failed.', error)
   }
