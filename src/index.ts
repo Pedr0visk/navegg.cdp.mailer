@@ -20,7 +20,7 @@ const start = async () => {
     await kafkaWrapper.connect('mailer-kafka', process.env.KAFKA_BROKERS.split(','))
     new AudienceActivatedConsumer(kafkaWrapper.client).listen()
 
-    await connect("", {
+    await connect(process.env.MONGO_URI!, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
       useCreateIndex: true,

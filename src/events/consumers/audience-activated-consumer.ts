@@ -59,6 +59,8 @@ export class AudienceActivatedConsumer extends Consumer<AudienceActivatedEvent> 
       } else {
         console.log('error')
       }
+      await report.save()
+      console.log('report created!')
     }
   }
 }
