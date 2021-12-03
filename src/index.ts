@@ -1,6 +1,7 @@
 // import mongoose from 'mongoose'
 
 import { kafkaWrapper } from "./kafka-wrapper"
+import { notificationWrapper } from "./notification-wrapper"
 import { AudienceActivatedConsumer } from "./events/consumers/audience-activated-consumer"
 
 const dotenv = require('dotenv');
@@ -16,6 +17,7 @@ const start = async () => {
   }
 
   try {
+    await notificationWrapper.listen()
     await kafkaWrapper.connect('mailer-kafka', process.env.KAFKA_BROKERS.split(','))
     new AudienceActivatedConsumer(kafkaWrapper.client).listen()
 
