@@ -27,6 +27,8 @@ export class AudienceActivatedConsumer extends Consumer<AudienceActivatedEvent> 
       status: ReportStatus.Pending
     })
 
+    // report.save()
+
     // SendGrid Service
     const sendGridSvc = new SendGridService(apiKey)
 
@@ -59,8 +61,8 @@ export class AudienceActivatedConsumer extends Consumer<AudienceActivatedEvent> 
       } else {
         console.log('error')
       }
-      await report.save()
-      console.log('report created!')
+      // update progress
+      // emit event to frontend
     }
   }
 }
