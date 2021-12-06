@@ -4,6 +4,14 @@ import { Report, ReportStatus } from "../../models/reports"
 import { kafkaGroupName } from "./kafka-group-name"
 import { SendGridService } from "../../services/sendgrid-service"
 
+async function mockSendEmail() {
+  return new Promise<boolean>((resolve, reject) => {
+    setTimeout(() => {
+      resolve(true)
+    }, 2000);
+  })
+}
+
 export class AudienceActivatedConsumer extends Consumer<AudienceActivatedEvent> {
   topic: Topics.AudienceActivated = Topics.AudienceActivated
   queueGroupName = kafkaGroupName
@@ -18,21 +26,24 @@ export class AudienceActivatedConsumer extends Consumer<AudienceActivatedEvent> 
       apiKey
     } = data
 
-    const report = Report.build({
-      userId,
-      audienceId,
-      templateId,
-      recipients,
-      sender,
-      status: ReportStatus.Pending
-    })
+    try {
+      const report = Report.build({
+        userId,
+        audienceId,
+        templateId,
+        recipients,
+        sender,
+        status: ReportStatus.Pending
+      })
+      report.save()
 
-    // report.save()
+    } catch (error) {
+      console.log('@@@ Error creating Report', error)
+    }
 
     // SendGrid Service
     const sendGridSvc = new SendGridService(apiKey)
-
-    const chunks = SendGridService.lazyLoadRecipients(recipients, 1000);
+    const chunks = SendGridService.lazyLoadRecipients(recipients, 1000)
 
     // send emails by ckunk
     for (let index = 0; index < chunks.length; index++) {
@@ -46,23 +57,22 @@ export class AudienceActivatedConsumer extends Consumer<AudienceActivatedEvent> 
               audience_id: audienceId
             }
           }
+        } else {
+          // send contact to a list of customers without email
         }
-      });
-
-      const response = await sendGridSvc.sendEmails({
-        template_id: templateId,
-        from: { email: sender },
-        //@ts-ignore
-        personalizations: personalizations_data,
       })
 
-      if (response.success) {
-        console.log('success')
-      } else {
-        console.log('error')
-      }
-      // update progress
-      // emit event to frontend
+      const ok = await mockSendEmail()
+      // notify user about the progress
+
+      // const response = await sendGridSvc.sendEmails({
+      //   template_id: templateId,
+      //   from: { email: sender },
+      //   //@ts-ignore
+      //   personalizations: personalizations_data,
+      // })
+
+
     }
   }
 }

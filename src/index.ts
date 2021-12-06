@@ -1,12 +1,12 @@
 import { connect } from 'mongoose';
+import dotenv from 'dotenv'
 
 import { kafkaWrapper } from "./kafka-wrapper"
 import { notificationWrapper } from "./notification-wrapper"
 import { AudienceActivatedConsumer } from "./events/consumers/audience-activated-consumer"
 import { app } from './app'
 
-const dotenv = require('dotenv');
-dotenv.config();
+dotenv.config()
 
 const start = async () => {
   // verify envs

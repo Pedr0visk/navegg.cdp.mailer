@@ -1,9 +1,7 @@
 import express, { Request, Response } from 'express'
-import {currentUser, requireAuth, ServerError} from "@navegg/common"
+import { currentUser, requireAuth, ServerError } from "@navegg/common"
 
 import { Report } from '../models/reports'
-
-
 
 const router = express.Router()
 

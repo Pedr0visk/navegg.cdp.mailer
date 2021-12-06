@@ -1,8 +1,9 @@
 import { Server } from 'socket.io'
+import { createServer } from 'http'
+import { app } from './app'
 
 class NotificationWrapper {
-  private _io: Server
-  private PORT: number = 3333
+  private _io: any
 
   get io() {
     if (!this._io) {
@@ -14,13 +15,17 @@ class NotificationWrapper {
 
   listen() {
     return new Promise<void>((resolve, reject) => {
-      this._io = new Server()
+      const httpServer = createServer(app)
+      this._io = new Server(httpServer, {
+        cors: {
+          origin: '*'
+        }
+      })
 
       this.io.on('connect', (socket: any) => {
         console.log(socket, 'Successfully connected')
       })
 
-      this.io.listen(this.PORT)
       resolve()
     })
   }
