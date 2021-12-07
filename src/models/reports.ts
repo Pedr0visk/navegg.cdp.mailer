@@ -9,6 +9,8 @@ interface ReportAttrs {
   templateId: string
   status: ReportStatus
   recipients: any[]
+  successful?: any[]
+  unsuccessful?: any[]
   sender: string
 }
 
@@ -18,6 +20,8 @@ interface ReportDoc extends Document {
   templateId: string
   status: ReportStatus
   recipients: any[]
+  successful?: any[]
+  unsuccessful?: any[]
   sender: string
 }
 
@@ -52,6 +56,14 @@ const reportSchema = new Schema(
     recipients: {
       type: Array,
       required: true
+    },
+    successful: {
+      type: Array,
+      required: false
+    },
+    unsuccessful: {
+      type: Array,
+      required: false
     }
   },
   {

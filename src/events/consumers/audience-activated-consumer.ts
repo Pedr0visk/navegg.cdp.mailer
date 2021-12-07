@@ -26,16 +26,21 @@ export class AudienceActivatedConsumer extends Consumer<AudienceActivatedEvent> 
       apiKey
     } = data
 
+    let report = null
+
     try {
-      const report = Report.build({
+      report = Report.build({
         userId,
         audienceId,
         templateId,
         recipients,
         sender,
-        status: ReportStatus.Pending
+        status: ReportStatus.Pending,
+        successful: undefined,
+        unsuccessful: undefined,
       })
       report.save()
+      console.log('CREATED @@@')
 
     } catch (error) {
       console.log('@@@ Error creating Report', error)
@@ -44,6 +49,8 @@ export class AudienceActivatedConsumer extends Consumer<AudienceActivatedEvent> 
     // SendGrid Service
     const sendGridSvc = new SendGridService(apiKey)
     const chunks = SendGridService.lazyLoadRecipients(recipients, 1000)
+
+    report?.set({status: ReportStatus.Progress})
 
     // send emails by ckunk
     for (let index = 0; index < chunks.length; index++) {
@@ -65,12 +72,19 @@ export class AudienceActivatedConsumer extends Consumer<AudienceActivatedEvent> 
       const ok = await mockSendEmail()
       // notify user about the progress
 
-      // const response = await sendGridSvc.sendEmails({
-      //   template_id: templateId,
-      //   from: { email: sender },
-      //   //@ts-ignore
-      //   personalizations: personalizations_data,
-      // })
+      const response = await sendGridSvc.sendEmails({
+        template_id: templateId,
+        from: { email: sender },
+        //@ts-ignore
+        personalizations: personalizations_data,
+      })
+
+      if (response.success == false) {
+        report?.set({status: ReportStatus.Failed, unsuccessful: personalizations_data})
+        break;
+      } else {
+        report?.set({status: ReportStatus.Completed, successful: personalizations_data})
+      }
 
 
     }
