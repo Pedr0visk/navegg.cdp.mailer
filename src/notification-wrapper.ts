@@ -18,7 +18,7 @@ class NotificationWrapper {
       const httpServer = createServer(app)
       this._io = new Server(httpServer, {
         cors: {
-          origin: '*'
+          origin: ["http://localhost:3050"]
         }
       })
 
