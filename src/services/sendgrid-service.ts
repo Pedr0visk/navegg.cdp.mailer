@@ -1,16 +1,18 @@
 import axios, { AxiosResponse } from "axios"
 
-interface From {
+export interface IContact { id: string, attributes: any }
+interface IFrom {
   email: string
 }
-interface Personalization {
-  to: From[]
+
+export interface IPersonalization {
+  to: IFrom[]
   custom_args: any
 }
 
-interface Payload {
-  from: From
-  personalizations: Personalization[]
+export interface IPayload {
+  from: IFrom
+  personalizations: IPersonalization[]
   template_id: string
 }
 
@@ -22,7 +24,7 @@ export class SendGridService {
     this.apiKey = apiKey
   }
 
-  async sendEmails(data: Payload): Promise<{ success: boolean, data?: AxiosResponse }> {
+  async sendEmails(data: IPayload): Promise<{ success: boolean, data?: AxiosResponse }> {
     try {
       const res = await axios.post(this.apiUrl, data, this.config)
       return {
@@ -43,7 +45,7 @@ export class SendGridService {
     }
   }
 
-  static lazyLoadRecipients(arr: any, len: number): { id: string, attributes: any }[][] {
+  static lazyLoadRecipients(arr: any, len: number): IContact[][] {
     let chunks = [], i = 0, n = arr.length;
 
     while (i < n) {

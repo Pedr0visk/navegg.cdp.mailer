@@ -17,7 +17,8 @@
     "kafkajs": "^1.15.0",
     "mongoose": "^5.12.11",
     "socket.io": "^4.4.0",
-    "ts-node-dev": "^1.1.8"
+    "ts-node-dev": "^1.1.8",
+    "winston": "^3.3.3"
   },
   "devDependencies": {
     "typescript": "^4.5.2"
